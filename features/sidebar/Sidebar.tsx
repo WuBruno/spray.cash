@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Cutout } from "react95";
 
-import Contracts from "../../containers/Contracts";
+import Pools from "../../containers/Pools";
 import ContractItem from "./ContractItem";
 import ConnectOptions from "../connection/ConnectOptions";
 
@@ -40,8 +40,8 @@ const FilesContainer = styled.div`
   height: 100%;
 `;
 
-const Sidebar = ({ pool, setPool }) => {
-  const { contracts } = Contracts.useContainer();
+const Sidebar = () => {
+  const { pools } = Pools.useContainer();
   return (
     <Container>
       <ConnectOptions />
@@ -49,8 +49,8 @@ const Sidebar = ({ pool, setPool }) => {
         <div>Contracts:</div>
         <FilesCutout shadow={false}>
           <FilesContainer className="contract-list">
-            {contracts.map((c, i) => (
-              <ContractItem key={c.name} idx={i} name={c.name} />
+            {pools.map((c, i) => (
+              <ContractItem key={c.poolId} idx={i} name={c.poolId.toString()} />
             ))}
           </FilesContainer>
         </FilesCutout>

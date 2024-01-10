@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import Contracts from "../../containers/Contracts";
+import Pools from "../../containers/Pools";
 
 interface IProps {
   isActive: boolean;
@@ -16,27 +16,18 @@ const Item = styled.div`
 `;
 
 const ContractItem = ({ name, idx = 0 }: { name: string; idx: number }) => {
-  const { setSelectedIdx, selectedIdx } = Contracts.useContainer();
-  const isActive = selectedIdx === idx;
+  const { selectedPool, selectedId, setSelectedPoolId } = Pools.useContainer();
+  const isActive = selectedId === idx;
 
   const handleClick = () => {
-    setSelectedIdx(isActive ? null : idx);
+    setSelectedPoolId(isActive ? null : idx);
   };
-
-  // ensure an active item is always in view
-  const ref = React.createRef<HTMLDivElement>();
-  useEffect(() => {
-    if (isActive) {
-      ref.current.scrollIntoView({ block: "nearest" });
-    }
-  }, [isActive]);
 
   return (
     <Item
       isActive={isActive}
       onClick={handleClick}
       className="contract-list-item"
-      ref={ref}
     >
       {name}
     </Item>

@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import { Fieldset, Panel } from "react95";
 
-import Contracts from "../../containers/Contracts";
+import Pools from "../../containers/Pools";
 import OutputLog from "../output-log/OutputLog";
-import AddressInfo from "../address-info/AddressInfo";
+import PoolInfo from "../pool-info/PoolInfo";
 
 const Container = styled.div`
   flex-grow: 1;
@@ -38,30 +38,16 @@ const FooterPanel = styled(Panel)`
 `;
 
 const Main = () => {
-  const { selectedContract: contract, overwriteContract } =
-    Contracts.useContainer();
-
-  useEffect(() => {
-    const contracts = localStorage.getItem("contracts");
-    if (!contracts) {
-      return;
-    }
-    const result = `{"data":${contracts}}`;
-    let jsonResult = JSON.parse(result).data;
-    overwriteContract(jsonResult);
-  }, []);
+  const { selectedPool } = Pools.useContainer();
 
   return (
     <Container>
-      <ContentFrame label={contract && contract.name}>
+      <ContentFrame label={selectedPool?.poolId}>
         <Content>
           <TopContainer>
-            <AddressInfo />
+            <PoolInfo />
             <OutputLog />
           </TopContainer>
-          <FooterPanel variant="well">
-            {`Path: ${contract?.path}` || "No path specified for this contract"}
-          </FooterPanel>
         </Content>
       </ContentFrame>
     </Container>
