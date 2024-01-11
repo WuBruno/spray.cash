@@ -25,16 +25,16 @@ const Home = () => {
       </Head>
       <Connection.Provider>
         <Signers.Provider>
-          <Pools.Provider>
-            <Network.Provider>
-              <Address.Provider>
+          <Address.Provider>
+            <Pools.Provider>
+              <Network.Provider>
                 <Layout>
                   <Sidebar />
                   <Main />
                 </Layout>
-              </Address.Provider>
-            </Network.Provider>
-          </Pools.Provider>
+              </Network.Provider>
+            </Pools.Provider>
+          </Address.Provider>
         </Signers.Provider>
       </Connection.Provider>
     </OutputLog.Provider>

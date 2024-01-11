@@ -1,8 +1,13 @@
 import { createContainer } from "unstated-next";
 import { useEffect, useState } from "react";
-import { alloContract, strategyContract } from "../blockchain";
+import {
+  alloContract,
+  getIsPoolManager,
+  strategyContract,
+} from "../blockchain";
 import Signers from "./Signers";
 import { Signer, ethers } from "ethers";
+import Address from "./Address";
 
 // TODO: get registered applications using events in strategy
 
@@ -17,9 +22,10 @@ interface Pool {
   maxBid: bigint;
   upcomingMilestone: bigint;
 }
-const poolIds = [133, 135];
-
+// TODO: parameters to change when changing network
+const poolIds = [133, 135, 138];
 export const rpc = "https://ethereum-goerli.publicnode.com";
+const interval = 50000;
 
 async function getApplicants(strategyAddress: string) {
   const provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -31,9 +37,9 @@ async function getApplicants(strategyAddress: string) {
   let events: any[] = [];
   const filter = strategy.filters.Registered();
 
-  for (let i = startBlock; i < endBlock; i += 50000) {
+  for (let i = startBlock; i < endBlock; i += interval) {
     const _startBlock = i;
-    const _endBlock = Math.min(endBlock, i + 49999);
+    const _endBlock = Math.min(endBlock, i + interval - 1);
     const applicants = await strategy.queryFilter(
       filter,
       _startBlock,
@@ -82,9 +88,12 @@ async function getPools() {
 }
 
 export function usePools() {
-  const [selectedId, setSelectedPoolId] = useState<number | null>(null);
+  const { address } = Address.useContainer();
+  const [selectedId, setSelectedPoolId] = useState<number | null>(0);
   const [pools, setPools] = useState<Pool[]>([]);
   const [applicants, setApplicants] = useState<string[]>([]);
+  const [isPoolManager, setIsPoolManager] = useState<boolean>(false);
+
   const selectedPool = selectedId === null ? null : pools[selectedId];
 
   const updatePools = async () => {
@@ -99,6 +108,16 @@ export function usePools() {
     setApplicants(applicants);
   };
 
+  const updateIsPoolManager = async (
+    selected: Pool | null,
+    address: string | null
+  ) => {
+    if (!selected || !address) return;
+    const isManager = await getIsPoolManager(selected.poolId, address);
+
+    setIsPoolManager(isManager);
+  };
+
   useEffect(() => {
     updatePools();
   }, []);
@@ -106,6 +125,10 @@ export function usePools() {
   useEffect(() => {
     updateApplicants(selectedPool);
   }, [selectedPool]);
+
+  useEffect(() => {
+    updateIsPoolManager(selectedPool, address);
+  }, [selectedPool, address]);
 
   const updatePoolState = async () => {
     updateApplicants(selectedPool);
@@ -119,6 +142,7 @@ export function usePools() {
     updatePools,
     applicants,
     updatePoolState,
+    isPoolManager,
   };
 }
 

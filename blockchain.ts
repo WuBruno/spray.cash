@@ -1,10 +1,16 @@
 // Pool admins
 
-import { Contract, Signer } from "ethers";
+import { Contract, Signer, ethers } from "ethers";
 import Allo from "./abi/Allo.json";
 import HedgeyStrategy from "./abi/HedgeyRFPCommitteeStrategy.json";
-import { AbiCoder, defaultAbiCoder, parseEther } from "ethers/lib/utils";
+import {
+  AbiCoder,
+  defaultAbiCoder,
+  getAddress,
+  parseEther,
+} from "ethers/lib/utils";
 import { Provider } from "@ethersproject/providers";
+import { rpc } from "./containers/Pools";
 
 export const alloAddress = "0x1133eA7Af70876e64665ecD07C0A0476d09465a1";
 
@@ -63,18 +69,22 @@ async function getApplications() {}
 
 export async function registerApplicant(
   alloContract: Contract,
-  poolId: number,
-  bid: string, // amount to bid, must be less than max_bid
-  term: number //seconds
+  poolId: number
 ) {
   // Allo contract `registerApplicant`
   const address = await alloContract.signer.getAddress();
   const data = defaultAbiCoder.encode(
     ["address", "address", "uint", "tuple(uint, string)", "uint"],
-    [null, address, parseEther(bid), [1, "hash"], term]
+    [
+      ethers.constants.AddressZero,
+      address,
+      parseEther("100"),
+      [1, "hash"],
+      100000,
+    ]
   );
 
-  const tx = await alloContract.registerApplicant(poolId, data);
+  const tx = await alloContract.registerRecipient(poolId, data);
   const res = await tx.wait();
   console.log(res);
 }
@@ -86,6 +96,14 @@ export async function submitMilestone(strategyContract: Contract) {
   const tx = await strategyContract.submitUpcomingMilestone(data);
   const res = await tx.wait();
   console.log(res);
+}
+
+export async function getIsPoolManager(
+  poolId: number,
+  address: string
+): Promise<boolean> {
+  const provider = new ethers.providers.JsonRpcProvider(rpc);
+  return alloContract(provider).isPoolManager(poolId, address);
 }
 
 // View functions

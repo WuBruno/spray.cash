@@ -46,7 +46,7 @@ const Sidebar = () => {
     <Container>
       <ConnectOptions />
       <ContractsSection>
-        <div>Contracts:</div>
+        <div>Pools:</div>
         <FilesCutout shadow={false}>
           <FilesContainer className="contract-list">
             {pools.map((c, i) => (

@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Panel, Fieldset, Divider, Button } from "react95";
 
-import Network from "../../containers/Network";
-import Input from "../common/Input";
 import Pools, { rpc } from "../../containers/Pools";
-import { formatEther, parseEther } from "ethers/lib/utils";
 import {
   alloContract,
+  distribute,
   hasVoted,
+  setMilestones,
   strategyContract,
   vote,
 } from "../../blockchain";
-import { Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import Signers from "../../containers/Signers";
 import Address from "../../containers/Address";
 
@@ -36,11 +35,15 @@ const AddressPanel = styled(Panel)`
   // margin-top: 1rem;
 `;
 
-const Voting = () => {
-  const { selectedPool, applicants } = Pools.useContainer();
+const Manager = () => {
+  const { selectedPool, applicants, isPoolManager } = Pools.useContainer();
   const { signer } = Signers.useContainer();
   const { address } = Address.useContainer();
   const [voted, setVoted] = useState<string>();
+  const votingDisabled =
+    (voted && voted.length > 0) ||
+    (selectedPool?.acceptedRecipientAddress &&
+      selectedPool.acceptedRecipientAddress.length > 0);
 
   useEffect(() => {
     const updateVoted = async () => {
@@ -63,18 +66,30 @@ const Voting = () => {
   const handleVote = async (recipient: string) => {
     if (signer) {
       const allo = alloContract(signer);
-      vote(allo, selectedPool.poolId, recipient);
+      await vote(allo, selectedPool.poolId, recipient);
     }
   };
 
-  if (!signer || !address) return null;
+  const handleSetMilestone = async () => {
+    if (!signer) return;
+    const strategy = strategyContract(selectedPool.strategyAddress, signer);
+    await setMilestones(strategy);
+  };
+
+  const handleDistribute = async () => {
+    if (!signer) return;
+    const allo = alloContract(signer);
+    await distribute(allo, selectedPool.poolId);
+  };
+
+  if (!signer || !address || !isPoolManager) return null;
   return (
-    <Container label="Voting">
+    <Container label="Manager">
       <div style={{ marginBottom: 5 }}>Potential candidates to vote for</div>
       {applicants.map((applicant) => {
         return (
           <Button
-            disabled={voted?.length > 0}
+            disabled={votingDisabled}
             primary={voted == applicant}
             onClick={() => handleVote(applicant)}
             key={applicant}
@@ -83,8 +98,24 @@ const Voting = () => {
           </Button>
         );
       })}
+      <Fieldset
+        label="Milestones"
+        style={{
+          marginTop: "auto",
+          flexDirection: "column",
+          display: "flex",
+        }}
+      >
+        <Button style={{ marginBottom: 5 }} onClick={handleSetMilestone}>
+          Set Milestone
+        </Button>
+        <Button>Reject Milestone</Button>
+      </Fieldset>
+      <Button style={{ marginTop: 10 }} onClick={handleDistribute}>
+        Distribute
+      </Button>
     </Container>
   );
 };
 
-export default Voting;
+export default Manager;

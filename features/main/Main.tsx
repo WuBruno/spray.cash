@@ -6,7 +6,8 @@ import { Fieldset, Panel } from "react95";
 import Pools from "../../containers/Pools";
 import OutputLog from "../output-log/OutputLog";
 import PoolInfo from "../pool-info/PoolInfo";
-import Voting from "../voting/Voting";
+import Manager from "../manager/Manager";
+import Applicant from "../applicant/Applicant";
 
 const Container = styled.div`
   flex-grow: 1;
@@ -47,8 +48,8 @@ const Main = () => {
         <Content>
           <TopContainer>
             <PoolInfo />
-            <Voting />
-            <OutputLog />
+            <Manager />
+            <Applicant />
           </TopContainer>
         </Content>
       </ContentFrame>
