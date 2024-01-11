@@ -41,9 +41,8 @@ const Manager = () => {
   const { address } = Address.useContainer();
   const [voted, setVoted] = useState<string>();
   const votingDisabled =
-    (voted && voted.length > 0) ||
-    (selectedPool?.acceptedRecipientAddress &&
-      selectedPool.acceptedRecipientAddress.length > 0);
+    voted != ethers.constants.AddressZero ||
+    selectedPool?.acceptedRecipientAddress != ethers.constants.AddressZero;
 
   useEffect(() => {
     const updateVoted = async () => {

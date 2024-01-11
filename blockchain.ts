@@ -44,21 +44,18 @@ export async function vote(
 
 export async function setMilestones(strategyContract: Contract) {
   // Strategy Contract `setMilestones`
-  const data = defaultAbiCoder.encode(
-    ["tuple(uint, tuple(uint, string), uint)[]"],
-    [
-      [parseEther("0.5"), [1, "hash"], 0],
-      [parseEther("0.5"), [1, "hash"], 0],
-    ]
-  );
-  const tx = await strategyContract.setMilestones(data);
+
+  const tx = await strategyContract.setMilestones([
+    [parseEther("0.5"), [1, "hash"], 0],
+    [parseEther("0.5"), [1, "hash"], 0],
+  ]);
   const res = await tx.wait();
   console.log(res);
 }
 
 export async function distribute(alloContract: Contract, poolId: number) {
   // Allo contract
-  const tx = await alloContract.distribute(poolId, [], "");
+  const tx = await alloContract.distribute(poolId, [], "0x");
   const res = await tx.wait();
   console.log(res);
 }
@@ -91,9 +88,8 @@ export async function registerApplicant(
 
 export async function submitMilestone(strategyContract: Contract) {
   // Strategy contract `submitMilestone`
-  const data = defaultAbiCoder.encode(["tuple(uint, string)"], [[1, "hash"]]);
 
-  const tx = await strategyContract.submitUpcomingMilestone(data);
+  const tx = await strategyContract.submitUpcomingMilestone([1, "hash"]);
   const res = await tx.wait();
   console.log(res);
 }

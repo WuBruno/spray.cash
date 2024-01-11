@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Panel, Fieldset, Divider, Button } from "react95";
+import { Panel, Fieldset, Button } from "react95";
 
-import Pools, { rpc } from "../../containers/Pools";
+import Pools from "../../containers/Pools";
 import {
   alloContract,
-  distribute,
-  hasVoted,
   registerApplicant,
-  setMilestones,
   strategyContract,
   submitMilestone,
-  vote,
 } from "../../blockchain";
-import { ethers } from "ethers";
 import Signers from "../../containers/Signers";
 import Address from "../../containers/Address";
 import Input from "../common/Input";
@@ -62,7 +57,7 @@ const Applicant = () => {
   };
 
   return (
-    <Container label="Manager">
+    <Container label="Applicant">
       <Input style={{ marginBottom: 10 }} />
       <Button style={{ marginBottom: 20 }} onClick={handleRegisterPool}>
         Register for Pool
