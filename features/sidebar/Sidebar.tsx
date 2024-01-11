@@ -49,9 +49,30 @@ const Sidebar = () => {
         <div>Pools:</div>
         <FilesCutout shadow={false}>
           <FilesContainer className="contract-list">
-            {pools.map((c, i) => (
-              <ContractItem key={c.poolId} idx={i} name={c.poolId.toString()} />
-            ))}
+            {pools[0] && (
+              <>
+                <ContractItem
+                  key={pools[0].poolId}
+                  idx={0}
+                  name={"[Proposal] Grant hackathon winners..."}
+                />
+                <ContractItem
+                  key={pools[0].poolId}
+                  idx={1}
+                  name={"[Proposal] Backfunding for projects..."}
+                />
+                <ContractItem
+                  key={pools[0].poolId}
+                  idx={2}
+                  name={"[Proposal] Pay Arbitrum delegates..."}
+                />
+                <ContractItem
+                  key={pools[0].poolId}
+                  idx={3}
+                  name={"[Proposal] Buy back and burn of..."}
+                />
+              </>
+            )}
           </FilesContainer>
         </FilesCutout>
       </ContractsSection>
