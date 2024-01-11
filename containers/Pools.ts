@@ -21,7 +21,7 @@ interface Pool {
   upcomingMilestone: bigint;
 }
 // TODO: parameters to change when changing network
-const poolIds = [1];
+const poolIds = [2];
 export const rpc = "https://arbitrum.llamarpc.com";
 const interval = 50000;
 
