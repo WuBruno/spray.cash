@@ -11,12 +11,18 @@ import Sidebar from "../features/sidebar/Sidebar";
 import Main from "../features/main/Main";
 import Network from "../containers/Network";
 import OutputLog from "../containers/OutputLog";
+import Head from "next/head";
 
 Modal.setAppElement("html");
 
 const Home = () => {
+  // TODO: update description
   return (
     <OutputLog.Provider>
+      <Head>
+        <title>Spray.Cash</title>
+        <meta content="Spray your cash with purpose." name="description" />
+      </Head>
       <Connection.Provider>
         <Signers.Provider>
           <Pools.Provider>

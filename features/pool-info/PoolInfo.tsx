@@ -5,6 +5,7 @@ import { Panel, Fieldset, Divider } from "react95";
 import Network from "../../containers/Network";
 import Input from "../common/Input";
 import Pools from "../../containers/Pools";
+import { formatEther, parseEther } from "ethers/lib/utils";
 
 const containerWidth = 475;
 const Container = styled(Fieldset)`
@@ -28,14 +29,37 @@ const AddressPanel = styled(Panel)`
 
 const PoolInfo = () => {
   const { selectedPool } = Pools.useContainer();
+
+  if (!selectedPool) return null;
+
   return (
     <Container label="Pool Info">
       <div>
         PoolID:
         <AddressPanel variant="well">{selectedPool?.poolId}</AddressPanel>
-        Custom
+        Pool Size
         <AddressPanel variant="well">
-          {"No valid address, function call will fail"}
+          {formatEther(selectedPool?.amount)}
+        </AddressPanel>
+        Max Bid
+        <AddressPanel variant="well">
+          {formatEther(selectedPool.maxBid)}
+        </AddressPanel>
+        Strategy Address
+        <AddressPanel variant="well">
+          {selectedPool.strategyAddress}
+        </AddressPanel>
+        Recipient Address
+        <AddressPanel variant="well">
+          {selectedPool.acceptedRecipientAddress}
+        </AddressPanel>
+        Token Address
+        <AddressPanel variant="well">{selectedPool.tokenAddress}</AddressPanel>
+        Token Address
+        <AddressPanel variant="well">{selectedPool.tokenAddress}</AddressPanel>
+        Next Milestone
+        <AddressPanel variant="well">
+          {selectedPool.upcomingMilestone.toString()}
         </AddressPanel>
       </div>
     </Container>

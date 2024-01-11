@@ -6,8 +6,10 @@ import HedgeyStrategy from "./abi/HedgeyRFPCommitteeStrategy.json";
 import { AbiCoder, defaultAbiCoder, parseEther } from "ethers/lib/utils";
 import { Provider } from "@ethersproject/providers";
 
-export function alloContract(address: string, signer: Signer | Provider) {
-  return new Contract(address, Allo, signer);
+export const alloAddress = "0x1133eA7Af70876e64665ecD07C0A0476d09465a1";
+
+export function alloContract(signer: Signer | Provider) {
+  return new Contract(alloAddress, Allo, signer);
 }
 
 export function strategyContract(address: string, signer: Signer | Provider) {

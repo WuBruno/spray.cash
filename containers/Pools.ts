@@ -11,22 +11,45 @@ interface Pool {
   strategyAddress: string;
   tokenAddress: string;
   profileId: string;
-  amount: string;
+  amount: bigint;
   isPoolActive: boolean;
   acceptedRecipientAddress: string;
-  maxBid: string;
-  upcomingMilestone: string;
+  maxBid: bigint;
+  upcomingMilestone: bigint;
 }
 const poolIds = [133, 135];
-const alloAddress = "0x1133eA7Af70876e64665ecD07C0A0476d09465a1";
 
 export const rpc = "https://ethereum-goerli.publicnode.com";
 
-async function getPools() {
-  console.log("update pools");
+async function getApplicants(strategyAddress: string) {
   const provider = new ethers.providers.JsonRpcProvider(rpc);
 
-  const allo = alloContract(alloAddress, provider);
+  const strategy = strategyContract(strategyAddress, provider);
+
+  const startBlock = 10350400;
+  const endBlock = await provider.getBlockNumber();
+  let events: any[] = [];
+  const filter = strategy.filters.Registered();
+
+  for (let i = startBlock; i < endBlock; i += 50000) {
+    const _startBlock = i;
+    const _endBlock = Math.min(endBlock, i + 49999);
+    const applicants = await strategy.queryFilter(
+      filter,
+      _startBlock,
+      _endBlock
+    );
+    events = [...events, ...applicants];
+  }
+  console.log(events);
+
+  return events.map((a: any) => a.args[2]);
+}
+
+async function getPools() {
+  const provider = new ethers.providers.JsonRpcProvider(rpc);
+
+  const allo = alloContract(provider);
   const pools: Pool[] = [];
 
   for (let poolId of poolIds) {
@@ -35,7 +58,7 @@ async function getPools() {
     );
 
     const strategy = strategyContract(strategyAddress, provider);
-    const amount: string = await strategy.getPoolAmount();
+    const amount: bigint = await strategy.getPoolAmount();
     const isPoolActive: boolean = await strategy.isPoolActive();
     const acceptedRecipientAddress: string =
       await strategy.acceptedRecipientId();
@@ -61,19 +84,42 @@ async function getPools() {
 export function usePools() {
   const [selectedId, setSelectedPoolId] = useState<number | null>(null);
   const [pools, setPools] = useState<Pool[]>([]);
+  const [applicants, setApplicants] = useState<string[]>([]);
   const selectedPool = selectedId === null ? null : pools[selectedId];
 
   const updatePools = async () => {
     const pools = await getPools();
-    console.log(pools);
     setPools(pools);
+  };
+
+  const updateApplicants = async (selected: Pool | null) => {
+    if (!selected) return;
+    setApplicants([]);
+    const applicants = await getApplicants(selected?.strategyAddress);
+    setApplicants(applicants);
   };
 
   useEffect(() => {
     updatePools();
   }, []);
 
-  return { selectedId, selectedPool, setSelectedPoolId, pools, updatePools };
+  useEffect(() => {
+    updateApplicants(selectedPool);
+  }, [selectedPool]);
+
+  const updatePoolState = async () => {
+    updateApplicants(selectedPool);
+  };
+
+  return {
+    selectedId,
+    selectedPool,
+    setSelectedPoolId,
+    pools,
+    updatePools,
+    applicants,
+    updatePoolState,
+  };
 }
 
 export default createContainer(usePools);
