@@ -21,8 +21,8 @@ interface Pool {
   upcomingMilestone: bigint;
 }
 // TODO: parameters to change when changing network
-const poolIds = [196];
-export const rpc = "https://sepolia-rollup.arbitrum.io/rpc";
+const poolIds = [1];
+export const rpc = "https://arbitrum.llamarpc.com";
 const interval = 50000;
 
 async function getApplicants(strategyAddress: string) {
@@ -30,7 +30,7 @@ async function getApplicants(strategyAddress: string) {
 
   const strategy = strategyContract(strategyAddress, provider);
 
-  const startBlock = 6258134;
+  const startBlock = 169228970;
   const endBlock = await provider.getBlockNumber();
   let events: any[] = [];
   const filter = strategy.filters.Registered();

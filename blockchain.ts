@@ -74,7 +74,7 @@ export async function registerApplicant(
       address,
       parseEther("100"),
       [1, "hash"],
-      100000,
+      1000000,
     ]
   );
 

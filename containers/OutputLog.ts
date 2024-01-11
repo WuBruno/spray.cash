@@ -10,7 +10,7 @@ export function useOutputLog() {
   const [logItems, setLogItems] = useState<LogItem[]>([]);
 
   const addLogItem = (x: string, type: string) => {
-    const url = `https://sepolia.arbiscan.io/tx/${x}`;
+    const url = `https://arbiscan.io/tx/${x}`;
     const message = `Transaction ${type} Sent:`;
     setLogItems((prev) => [{ url, message }, ...prev]);
   };
