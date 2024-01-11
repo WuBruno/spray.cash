@@ -21,8 +21,8 @@ interface Pool {
   upcomingMilestone: bigint;
 }
 // TODO: parameters to change when changing network
-const poolIds = [133, 135, 138];
-export const rpc = "https://ethereum-goerli.publicnode.com";
+const poolIds = [196];
+export const rpc = "https://sepolia-rollup.arbitrum.io/rpc";
 const interval = 50000;
 
 async function getApplicants(strategyAddress: string) {
@@ -30,7 +30,7 @@ async function getApplicants(strategyAddress: string) {
 
   const strategy = strategyContract(strategyAddress, provider);
 
-  const startBlock = 10350400;
+  const startBlock = 6258134;
   const endBlock = await provider.getBlockNumber();
   let events: any[] = [];
   const filter = strategy.filters.Registered();

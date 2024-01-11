@@ -55,8 +55,6 @@ const PoolInfo = () => {
         </AddressPanel>
         Token Address
         <AddressPanel variant="well">{selectedPool.tokenAddress}</AddressPanel>
-        Token Address
-        <AddressPanel variant="well">{selectedPool.tokenAddress}</AddressPanel>
         Next Milestone
         <AddressPanel variant="well">
           {selectedPool.upcomingMilestone.toString()}
