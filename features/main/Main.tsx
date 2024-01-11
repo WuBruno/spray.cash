@@ -51,6 +51,7 @@ const Main = () => {
             <Manager />
             <Applicant />
           </TopContainer>
+          <OutputLog />
         </Content>
       </ContentFrame>
     </Container>

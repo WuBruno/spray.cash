@@ -46,21 +46,17 @@ const OutputLog = () => {
     <Container label="Log">
       <Content className="output-log">
         {logItems.map((logItem, i) => {
-          if (logItem.type === "normal") {
-            return (
-              <LogItem key={i} className="output-log-item">
-                {logItem.message}
-              </LogItem>
-            );
-          }
-
-          if (logItem.type === "JSON") {
-            return (
-              <LogItemJSON key={i} className="output-log-item">
-                {logItem.message}
-              </LogItemJSON>
-            );
-          }
+          return (
+            <LogItemJSON key={i} className="output-log-item">
+              {logItem.message}{" "}
+              <a
+                href={logItem.url}
+                style={{ color: "blue", textDecoration: "underline" }}
+              >
+                Txn
+              </a>
+            </LogItemJSON>
+          );
         })}
       </Content>
       <ClearButton onClick={clear}>Clear</ClearButton>

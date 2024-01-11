@@ -38,8 +38,7 @@ export async function vote(
   // Allo contract `allocate`
   const data = defaultAbiCoder.encode(["address"], [recipient]);
   const tx = await alloContract.allocate(poolId, data);
-  const res = await tx.wait();
-  console.log(res);
+  return tx.hash;
 }
 
 export async function setMilestones(strategyContract: Contract) {
@@ -49,15 +48,13 @@ export async function setMilestones(strategyContract: Contract) {
     [parseEther("0.5"), [1, "hash"], 0],
     [parseEther("0.5"), [1, "hash"], 0],
   ]);
-  const res = await tx.wait();
-  console.log(res);
+  return tx.hash;
 }
 
 export async function distribute(alloContract: Contract, poolId: number) {
   // Allo contract
   const tx = await alloContract.distribute(poolId, [], "0x");
-  const res = await tx.wait();
-  console.log(res);
+  return tx.hash;
 }
 
 // Applicants
@@ -82,16 +79,7 @@ export async function registerApplicant(
   );
 
   const tx = await alloContract.registerRecipient(poolId, data);
-  const res = await tx.wait();
-  console.log(res);
-}
-
-export async function submitMilestone(strategyContract: Contract) {
-  // Strategy contract `submitMilestone`
-
-  const tx = await strategyContract.submitUpcomingMilestone([1, "hash"]);
-  const res = await tx.wait();
-  console.log(res);
+  return tx.hash;
 }
 
 export async function getIsPoolManager(
@@ -100,6 +88,13 @@ export async function getIsPoolManager(
 ): Promise<boolean> {
   const provider = new ethers.providers.JsonRpcProvider(rpc);
   return alloContract(provider).isPoolManager(poolId, address);
+}
+
+export async function submitMilestone(strategyContract: Contract) {
+  // Strategy contract `submitMilestone`
+
+  const tx = await strategyContract.submitUpcomingMilestone([1, "hash"]);
+  return tx.hash;
 }
 
 // View functions

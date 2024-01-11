@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Panel, Fieldset, Button } from "react95";
 
@@ -12,6 +12,7 @@ import {
 import Signers from "../../containers/Signers";
 import Address from "../../containers/Address";
 import Input from "../common/Input";
+import OutputLog from "../../containers/OutputLog";
 
 const containerWidth = 475;
 const Container = styled(Fieldset)`
@@ -34,25 +35,26 @@ const AddressPanel = styled(Panel)`
 `;
 
 const Applicant = () => {
-  const { selectedPool, applicants } = Pools.useContainer();
+  const { selectedPool } = Pools.useContainer();
   const { signer } = Signers.useContainer();
   const { address } = Address.useContainer();
+  const { addLogItem } = OutputLog.useContainer();
 
-  if (!selectedPool) return null;
-
-  if (!signer || !address) return null;
+  if (!selectedPool || !signer || !address) return null;
 
   const handleRegisterPool = async () => {
     if (signer) {
       const allo = alloContract(signer);
-      await registerApplicant(allo, selectedPool.poolId);
+      let hash = await registerApplicant(allo, selectedPool.poolId);
+      addLogItem(hash, "Pool Registration");
     }
   };
 
   const handleSubmitMilestone = async () => {
     if (signer) {
       const strategy = strategyContract(selectedPool.strategyAddress, signer);
-      await submitMilestone(strategy);
+      let hash = await submitMilestone(strategy);
+      addLogItem(hash, "Milestone Submission");
     }
   };
 

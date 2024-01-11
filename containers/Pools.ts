@@ -9,8 +9,6 @@ import Signers from "./Signers";
 import { Signer, ethers } from "ethers";
 import Address from "./Address";
 
-// TODO: get registered applications using events in strategy
-
 interface Pool {
   poolId: number;
   strategyAddress: string;
@@ -47,7 +45,6 @@ async function getApplicants(strategyAddress: string) {
     );
     events = [...events, ...applicants];
   }
-  console.log(events);
 
   return events.map((a: any) => a.args[2]);
 }

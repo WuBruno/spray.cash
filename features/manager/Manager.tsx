@@ -14,6 +14,7 @@ import {
 import { ethers } from "ethers";
 import Signers from "../../containers/Signers";
 import Address from "../../containers/Address";
+import OutputLog from "../../containers/OutputLog";
 
 const containerWidth = 475;
 const Container = styled(Fieldset)`
@@ -37,6 +38,7 @@ const AddressPanel = styled(Panel)`
 
 const Manager = () => {
   const { selectedPool, applicants, isPoolManager } = Pools.useContainer();
+  const { addLogItem } = OutputLog.useContainer();
   const { signer } = Signers.useContainer();
   const { address } = Address.useContainer();
   const [voted, setVoted] = useState<string>();
@@ -65,20 +67,23 @@ const Manager = () => {
   const handleVote = async (recipient: string) => {
     if (signer) {
       const allo = alloContract(signer);
-      await vote(allo, selectedPool.poolId, recipient);
+      const hash = await vote(allo, selectedPool.poolId, recipient);
+      addLogItem(hash, "Vote");
     }
   };
 
   const handleSetMilestone = async () => {
     if (!signer) return;
     const strategy = strategyContract(selectedPool.strategyAddress, signer);
-    await setMilestones(strategy);
+    const hash = await setMilestones(strategy);
+    addLogItem(hash, "Set Milestone");
   };
 
   const handleDistribute = async () => {
     if (!signer) return;
     const allo = alloContract(signer);
-    await distribute(allo, selectedPool.poolId);
+    const hash = await distribute(allo, selectedPool.poolId);
+    addLogItem(hash, "Distribute");
   };
 
   if (!signer || !address || !isPoolManager) return null;
